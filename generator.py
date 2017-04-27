@@ -1,4 +1,5 @@
 import tensorflow as tf
+import prettytensor as pt
 from utils import custom_operations
 
 #Pyflakes analyzes programs and detects various errors. passive checker of Python programs
@@ -23,7 +24,7 @@ def BEGAN_Generator(Z, batch_size, scope_name = "generator", reuse_scope = False
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
 
-		conv_2 = (layer_2
+		conv_2 = (conv_1
 			.custom_conv2d(n, k_h = 3, k_w = 3, d_h = 1, d_w = 1)
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
@@ -31,12 +32,12 @@ def BEGAN_Generator(Z, batch_size, scope_name = "generator", reuse_scope = False
 		layer_2 = (conv_2.
 					apply(tf.image.resize_nearest_neighbor, [16, 16]))
 
-		conv_3 = (layer_3
+		conv_3 = (layer_2
 			.custom_conv2d(n, k_h = 3, k_w = 3, d_h = 1, d_w = 1)
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
 
-		conv_4 = (layer_3
+		conv_4 = (conv_3
 			.custom_conv2d(n, k_h = 3, k_w = 3, d_h = 1, d_w = 1)
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
@@ -50,7 +51,7 @@ def BEGAN_Generator(Z, batch_size, scope_name = "generator", reuse_scope = False
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
 
-		conv_6 = (layer_5
+		conv_6 = (conv_5
 			.custom_conv2d(n, k_h = 3, k_w = 3, d_h = 1, d_w = 1)
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
@@ -63,7 +64,7 @@ def BEGAN_Generator(Z, batch_size, scope_name = "generator", reuse_scope = False
 			.conv_batch_norm()
 			.apply(tf.nn.elu))
 
-		conv_8 = (layer_7
+		conv_8 = (conv_7
 			.custom_conv2d(n, k_h = 3, k_w = 3, d_h = 1, d_w = 1)
 			.conv_batch_norm()
 			.apply(tf.nn.elu))

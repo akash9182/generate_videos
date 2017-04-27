@@ -2,10 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.misc 
 from glob import glob
-from config import datapath 
+from config import data_path 
 
-def loadData(size, offset = 0)
-
+def loadData(size, offset = 0):
 	import h5py
 	with h5py.File(data_path, 'r') as hf:
 		faces  = hf['images']
@@ -89,14 +88,13 @@ def  plot_gens(images, rowlabels, losses):
 	fig.suptitle('Top to Bottom : {}'.format(title) )
 	plt.show()
 	fig, ax = plt.subplots(nrows=1, ncols=1, figsize= (20,10), linewitdth = 4)
+	D_plt, = plt.semilogy((losses['discriminator']), linewidth=4, ls='-',
+	                      color='b', alpha=.5, label='D')
+	G_plt, = plt.semilogy((losses['generator']), linewidth=4, ls='-',
+	                      color='k', alpha=.5, label='G')
 
-    D_plt, = plt.semilogy((losses['discriminator']), linewidth=4, ls='-',
-                          color='b', alpha=.5, label='D')
-    G_plt, = plt.semilogy((losses['generator']), linewidth=4, ls='-',
-                          color='k', alpha=.5, label='G')
-
-    plt.gca()
-    leg = plt.legend(handles=[D_plt, G_plt],
-                     fontsize=20)
-    leg.get_frame().set_alpha(0.5)
-    plt.show()
+	plt.gca()
+	leg = plt.legend(handles=[D_plt, G_plt],
+	                 fontsize=20)
+	leg.get_frame().set_alpha(0.5)
+	plt.show()

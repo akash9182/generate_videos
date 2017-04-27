@@ -21,26 +21,26 @@ class conv_batch_norm(pt.VarStoreMethod):
 		shape = input_layer.shape
 		shp = in_dim or shape[-1]
 		with tf.variable_scope(name) as scope:
-			self.mean = self.vaiable('mean', [shp], 
+			self.mean = self.variable('mean', [shp], 
 									 init = tf.constant_initializer(0.),
 									 train= False)
 
-			self.variance = self.varaible('variance', [shp],
+			self.variance = self.variable('variance', [shp],
 									 init = tf.constant_initializer(1.0),
 									 train = False)
 
-			self.gamma = self.varaible("gamma", [shp], init = tf.random_normal_initializer(1., 0.02))
-			self.beta = self.varaible("beta", [shp], init = tf.constant_initializer(0.))
+			self.gamma = self.variable("gamma", [shp], init = tf.random_normal_initializer(1., 0.02))
+			self.beta = self.variable("beta", [shp], init = tf.constant_initializer(0.))
 
 			if phase == Phase.train:
 				mean, variance = tf.nn.moments(input_layer.tensor, [0,1,2])
 				mean.set_shape((shp,))
 				variance.set_shape((shp,))
 
-				update_moving_mean = moving_averages.assign_movnig_average(self.mean, mean, decay)
-				update_moving_variance = moving_averages.assign_movnig_average(self.variance, variance,decay)
+				update_moving_mean = moving_averages.assign_moving_average(self.mean, mean, decay)
+				update_moving_variance = moving_averages.assign_moving_average(self.variance, variance,decay)
 
-				with tf.control_depencencies([update_moving_mean, update_moving_variance]):
+				with tf.control_dependencies([update_moving_mean, update_moving_variance]):
 					normalized_x = tf.nn.batch_norm_with_global_normalization(input_layer.tensor,  
 						mean, variance, self.beta, self.gamma, epsilon,
 						scale_after_normalization = True)
@@ -80,7 +80,7 @@ class custom_conv2d(pt.VarStoreMethod):
 					padding = "SAME", name = "conv2d"):
 
 		with tf.variable_scope(name):
-			w = self.varaible('w', [k_h, k_w, in_dim or input_layer.shape[-1], output_dim],
+			w = self.variable('w', [k_h, k_w, in_dim or input_layer.shape[-1], output_dim],
 								init= tf.truncated_normal_initializer(stddev = stddev))
 			conv = tf.nn.conv2d(input_layer.tensor, w, 
 								strides = [1, d_h, d_w, 1], padding = padding)
@@ -98,7 +98,7 @@ class custom_deconv2d(object):
 		ts_output_shape = tf.pack(output_shape)
 		with tf.variable_scope(name):
 
-			w = self.varaible('w', [k_h, k_w, output_shape[-1],	
+			w = self.variable('w', [k_h, k_w, output_shape[-1],	
 									input_layer.shape[-1]],
 							  init = tf.random_normal_initializer(stddev = stddev))
 			try:
@@ -131,12 +131,12 @@ class custom_fully_connected(pt.VarStoreMethod):
 			shape = input_.get_shape().as_list()
 
 		with tf.variable_scope(scope or "Linear"):
-			matrix = self.vaiable("Matrix", 
+			matrix = self.variable("Matrix", 
 									[in_dim or shape[1], output_size],
 									dt = tf.float32,
 									init = tf.random_normal_initializer(stddev = stddev))
 
-			bias = self.varaible("bias", [output_size],
+			bias = self.variable("bias", [output_size],
 								init = tf.constant_initializer(bias_start))
 
 			return input_layer.with_tensor(tf.matmul(input_, matrix) + bias, parameters= self.vars)
