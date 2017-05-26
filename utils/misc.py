@@ -3,6 +3,7 @@ import numpy as np
 import scipy.misc 
 from glob import glob
 from config import data_path 
+import os
 
 def loadData(size, offset = 0):
 	import h5py
@@ -27,7 +28,7 @@ def loadData(size, offset = 0):
 		return faces / 255
 
 
-	def loadJPGs(path = '/home/jarvis/My projects/Machine Learning', width = 64, height = 64):
+	def loadJPGs(path = os.getcwd() , width = 64, height = 64):
 		filenames = glob(path+"*.jpg")
 		filenames = np.sort(filenames)
 
