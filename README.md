@@ -47,66 +47,7 @@ The overall result is a surprisingly effective model which produces samples well
 
 *128x128 samples generated from random points in Z, from [(Berthelot, Schumm and Metz, 2017)](#references).*
 
-### Training
 
-After your dataset has been created through the method above, change the file config.py to point to your dataset, and to point to your desired checkpoint directory.
-
-E.g., if your dataset is stored at ```/home/user/data/dataset.hdf5```, then alter config.py to read:
-
-```python
-dataset_path = '/home/user/data/dataset.hdf5'
-checkpoint_path = './checkpoints'
-```
-
-You can then begin training:
-
-```bash
-python main.py --start-epoch=0, add-epochs=100 --save-every 5
-```
-
-If you have limited RAM you might need to limit the number of images loaded into memory at once, e.g.
-
-```bash
-python main.py --start-epoch=0 add-epochs=100 --save-every 5 --max-images 20000
-```
-
-I have 12GB which works for around 60,000 images.
-
-You can specify GPU id with the ```--gpuid``` argument. If you want to run on CPU (not recommended!) use ```--gpuid -1```
-
-Other parameters can be tuned if you wish (run ```python main.py --help``` for the full list).
-The default values are the same as in the paper (though the authors point out that their choices aren't necessarily optimal).
-
-The main difference between this implementation's defaults and the original paper is the use of batch normalisation, we found that not using batch normalisation made training much slower.
-
-### Running
-
-After you've trained a model and you want to generate some samples simply run
-```bash
-python main.py --start-epoch=N add-epochs=0 --train=False
-```
-where N is the checkpoint you want to run from.
-Samples will be saved to ./outputs/ by default (or add optional argument ```--outdir``` for alternative).
-
-### Tracking Progress
-
-As discussed previously, the convergence measure gives a very nice way of tracking progress
-This is implemented into the code (via the dictionary ```loss_tracker``` with key ```convergence_measure```)
-
-Berthelot, Schumm and Metz show that it is a true-to-reality metric to use:
-
-<p align='center'>
-<img src='../master/readme/conv_measure_vis.png' width=550>
-</p>
-
-*Convergence measure over training epochs, with generator outputs showed above [(Berthelot, Schumm and Metz, 2017)](#references).*
-
-
-## Issues / Contributing / Todo
-
-Feel free to raise any issues in the project [issue tracker](http://github.com/artcg/BEGAN/issues), or make a [pull-request](http://github.com/artcg/BEGAN/pulls) if there is something you want to add.
-
-My next plan is to upload some pre-trained weights so beginners can run the model out-of-the-box.
 
 ## References
 
