@@ -1,7 +1,5 @@
 # BEGAN: Boundary Equibilibrium Generative Adversarial Networks
 
-This is an implementation of the paper on Boundary Equilibrium Generative Adversarial Networks [(Berthelot, Schumm and Metz, 2017)](#references).
-
 
 ## What are Boundary Equilibrium Generative Adversarial Networks?
 
