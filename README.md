@@ -51,49 +51,6 @@ The overall result is a surprisingly effective model which produces samples well
 
 *128x128 samples generated from random points in Z, from [(Berthelot, Schumm and Metz, 2017)](#references).*
 
-## Usage 
-
-### Data Preprocessing
-
-You might want to use the 'CelebA' dataset [(Liu et al. 2015)](#references), this can be downloaded from [the project website](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). Make sure to download the 'Aligned and Cropped' Version. However you can modify these instructions to use an alternate dataset.
-
-(Note: if the CelebA Dropbox is down you can alternatively use their [Google Drive](https://drive.google.com/open?id=0B7EVK8r0v71pWEZsZE9oNnFzTm8)).
-
-This then needs to be prepared into hdf5 through the following method:
-
-```python
-from glob import glob 
-import os
-import numpy as np
-import h5py
-from tqdm import tqdm
-from scipy.misc import imread, imresize
-
-filenames = glob(os.path.join("img_align_celeba", "*.jpg"))
-filenames = np.sort(filenames)
-w, h = 64, 64  # Change this if you wish to use larger images
-data = np.zeros((len(filenames), w * h * 3), dtype = np.uint8)
-
-# This preprocessing is appriate for CelebA but should be adapted
-# (or removed entirely) for other datasets.
-
-def get_image(image_path, w=64, h=64):
-    im = imread(image_path).astype(np.float)
-    orig_h, orig_w = im.shape[:2]
-    new_h = int(orig_h * w / orig_w)
-    im = imresize(im, (new_h, w))
-    margin = int(round((new_h - h)/2))
-    return im[margin:margin+h]
-
-for n, fname in tqdm(enumerate(filenames)):
-    image = get_image(fname, w, h)
-    data[n] = image.flatten()
-
-with h5py.File(''.join(['datasets/celeba.h5']), 'w') as f:
-    f.create_dataset("images", data=data)
-```
-
-
 ### Training
 
 After your dataset has been created through the method above, change the file config.py to point to your dataset, and to point to your desired checkpoint directory.
